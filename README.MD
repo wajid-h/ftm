@@ -1,7 +1,7 @@
-## To Do
-    [ ]stage.
-    [ ]publish.
-    [ ]versionize.
-    [ ]revert.
-    [ ]remote uploads  and downloads.
+## To Do<hr>
+    [ ] stage.
+    [ ] publish.
+    [ ] versionize.
+    [ ] revert.
+    [ ] remote uploads  and downloads.
  
