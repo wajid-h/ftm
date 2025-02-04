@@ -9,9 +9,11 @@ namespace FTM
         public static void Main(params string[] args)
         {
             Controller.Init(".");
-
-            Task.Delay(100);
             Controller.Stage(args[0]);
+            string path = ".vcs\\.stage\\bin" ;
+            //    FileMover.CopyDirectory
+            // (path, Path.Join("yo", path),
+            //  true, FileMover.ExtensionMode.Remove) ;   
         }
 
     }

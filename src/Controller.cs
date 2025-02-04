@@ -1,4 +1,3 @@
-using System.Net.Http.Headers;
 using FTM.FileControllers;
 
 namespace FTM.Core
@@ -42,11 +41,11 @@ namespace FTM.Core
 
         public static bool Stage(string path)
         {
-            
-            Log.Debug($"Copying file {Path.GetFullPath(path)} --> {SETTINGS.STAGE_PATH}");
-
-            return FileMover.CopyFile(path,SETTINGS.STAGE_PATH, true , ".bak", FileMover.ExtensionMode.Append) ;
-            //FileMover.CopyDirectory(path, SETTINGS.STAGE_PATH, true, FileMover.ExtensionMode.Append) ;   
+        
+            //PathType type = IdentifyType(path);
+            //return type == PathType.File ?
+           // FileMover.CopyFile(path,SETTINGS.STAGE_PATH, true , SETTINGS.BACKUP_EXTENSION_MARK, FileMover.ExtensionMode.Append) :
+            return FileMover.CopyDirectory(path, SETTINGS.STAGE_PATH, true, FileMover.ExtensionMode.Append) ;   
 
         }
 
