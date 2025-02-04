@@ -1,6 +1,8 @@
 #pragma warning disable IDE0130
 
-using System.Runtime.CompilerServices;
+
+using System.Diagnostics;
+using System.Text;
 
 namespace FTM.FileControllers
 {
@@ -31,7 +33,7 @@ namespace FTM.FileControllers
                 }
                 else
                 {
-                    if (isDirectory) CopyDirectory(target, destination, true); // TODO   copy dir call;
+                    if (isDirectory) CopyDirectory(target, destination, overwrite);
                     else File.Copy(target, destination, overwrite);
                 }
                 return true;
@@ -45,22 +47,45 @@ namespace FTM.FileControllers
         {
             // get all files
             string[] files = Directory.GetFiles(directory, "*", SearchOption.AllDirectories);
+            string[] dirs = Directory.GetDirectories(directory, "*", SearchOption.AllDirectories);
 
-            bool replaceAll  =  default ; 
+            bool replaceDirs = false;
+            bool replaceFiles = false;
 
+            foreach (string dir in dirs)
+            {
+                string newDirPath = Path.Combine(destination, dir);
+                if (Directory.Exists(newDirPath) && replaceDirs == false){
+                    Log.AskFor($"Directoryy '{newDirPath}' already exists, replace conflicting dirs?", () => replaceDirs = true, () => replaceDirs = false);
+                    if (replaceDirs) Directory.CreateDirectory(Path.Combine(destination, dir));
+                }
+                else Directory.CreateDirectory(Path.Combine(destination, dir));
+            }
             foreach (string file in files)
             {
-                string currentFileDestination = Path.Combine(destination, file);
-                if(File.Exists(currentFileDestination) && overwrite){
-                    if(!replaceAll)
-                    Log.AskFor($"Overwrite existing files? (current:{file})", ()=> replaceAll = true , ()=>  replaceAll =  false) ;
-                    else{
-                        File.Copy(file, currentFileDestination) ;
-                    }
+                string filePath = Path.Combine(destination, file + ".bak");
+                if (File.Exists(filePath) && !replaceFiles){
+                    Log.AskFor($"File '{filePath}' already exists, replace conflicting files?", () => replaceFiles = true, () => replaceDirs = false);
+
+                    if (replaceFiles)  File.Copy(file, filePath, overwrite);
                 }
+                else File.Copy(file, filePath, overwrite);
+
             }
-            Log.Error("Something went wrong");
             return default;
+        }
+
+        static internal string GetParentByDir(string basePath)
+        {
+            List<string> pathContent = [.. basePath.Split(Path.DirectorySeparatorChar)];
+            pathContent.RemoveAt(pathContent.Count - 1);
+
+            StringBuilder pathBuilder = new();
+            foreach (string pathStrand in pathContent)
+            {
+                pathBuilder.Append(pathStrand);
+            }
+            return pathBuilder.ToString();
         }
     }
 }
