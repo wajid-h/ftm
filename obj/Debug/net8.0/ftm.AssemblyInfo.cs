@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ftm")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+66cc6c56f90f85778ee62929f3868a4d509805e3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bf3a281544b86b52e5c7beb0543f436af45ec768")]
 [assembly: System.Reflection.AssemblyProductAttribute("ftm")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ftm")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
