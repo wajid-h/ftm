@@ -9,6 +9,9 @@ namespace FTM
         public static void Main(params string[] args)
         {
             Controller.Init(".");
+
+            Task.Delay(100);
+            Controller.Stage(args[0]);
         }
 
     }

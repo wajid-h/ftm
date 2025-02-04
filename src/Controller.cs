@@ -1,10 +1,16 @@
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
+using System.Net.Http.Headers;
+using FTM.FileControllers;
 
 namespace FTM.Core
 {
     public class Controller
     {
+        internal enum PathType { File, Directory }
+
+        static DirectoryInfo? baseDir;
+        static DirectoryInfo? stageDir;
+        static DirectoryInfo? versionsDir;
+
         public static void Init(string directory)
         {
             if (!Directory.Exists(directory))
@@ -23,12 +29,38 @@ namespace FTM.Core
             }
             else
             {
-                Log.WriteLine("Initializing repository....") ;
-                Directory.CreateDirectory(initialPath);
-                Directory.CreateDirectory(stagePath);
-                Directory.CreateDirectory(versionsPath);
-                
+                Log.WriteLine("Initializing repository....");
+                baseDir = Directory.CreateDirectory(initialPath);
+                stageDir = Directory.CreateDirectory(stagePath);
+                versionsDir = Directory.CreateDirectory(versionsPath);
+
+                SETTINGS.STAGE_PATH =  stageDir.FullName ;
+
             }
+        }
+
+
+        public static bool Stage(string path)
+        {
+            
+            Log.Debug($"Copying file {Path.GetFullPath(path)} --> {SETTINGS.STAGE_PATH}");
+
+            return FileMover.CopyFile(path,SETTINGS.STAGE_PATH, true , ".bak", FileMover.ExtensionMode.Append) ;
+            //FileMover.CopyDirectory(path, SETTINGS.STAGE_PATH, true, FileMover.ExtensionMode.Append) ;   
+
+        }
+
+        private static PathType IdentifyType(string path, PathType priority = PathType.File)
+        {
+
+            bool isFile = File.Exists(path);
+            bool isDir = Directory.Exists(path);
+
+            if (isDir && isFile)
+                return priority;
+
+            return isDir ? PathType.Directory : PathType.File;
+
         }
 
         internal static bool HasMissingDirs(params string[] dirs)
@@ -37,7 +69,6 @@ namespace FTM.Core
 
             foreach (string dir in dirs)
             {
-
                 missing_dirs = Directory.Exists(dir) is false;
                 if (missing_dirs)
                     break;
