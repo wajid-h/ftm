@@ -1,9 +1,5 @@
 #pragma warning disable IDE0130
-
-
-using System.Diagnostics;
 using System.Text;
-
 namespace FTM.FileControllers
 {
 #pragma warning restore

@@ -2,28 +2,20 @@ public class Log
 {
     public class TUIAffirmCancelRequest
     {
-
-        private readonly Action yes;
-        private readonly Action no;
         public TUIAffirmCancelRequest(string message, Action onYes, Action onNo)
         {
-            yes = onYes;
-            no = onNo;
 
             Log.Write(message + " (Y/N)");
             string? readValue = Console.ReadLine();
-            if (string.IsNullOrEmpty(readValue) || readValue.Equals("n", StringComparison.OrdinalIgnoreCase))
-            {
+            if (string.IsNullOrEmpty(readValue) || readValue.Equals("n", StringComparison.OrdinalIgnoreCase)){
                 onNo.Invoke();
                 return;
             }
-            else if (readValue.Equals("y", StringComparison.OrdinalIgnoreCase))
-            {
+            else if (readValue.Equals("y", StringComparison.OrdinalIgnoreCase)){
                 onYes.Invoke();
                 return;
             }
-            else
-            {
+            else{
                 onNo.Invoke();
                 return;
             }
@@ -109,7 +101,7 @@ public class Log
             Console.ForegroundColor = ConsoleColor.DarkMagenta; 
             Console.WriteLine("logger__internal_warn: logging settings have not been configured manually, using fallback settings.");
             Settings = new(LoggingLevel.Debug);
-         
+            
         }
 
 
