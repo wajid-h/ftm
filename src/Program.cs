@@ -1,4 +1,6 @@
-﻿using FTM.FileControllers;
+﻿using System.Diagnostics.Contracts;
+using FTM.Core;
+using FTM.FileControllers;
 namespace FTM
 {
     public class FTMCore
@@ -6,7 +8,7 @@ namespace FTM
         // entry
         public static void Main(params string[] args)
         {
-            FileMover.CopyDirectory(args[0], args[1], true);
+            Controller.Init(".");
         }
 
     }

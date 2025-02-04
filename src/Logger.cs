@@ -98,8 +98,6 @@ public class Log
 
         if (Settings == null)
         {   
-            Console.ForegroundColor = ConsoleColor.DarkMagenta; 
-            Console.WriteLine("logger__internal_warn: logging settings have not been configured manually, using fallback settings.");
             Settings = new(LoggingLevel.Debug);
             
         }
