@@ -1,7 +1,4 @@
 #pragma warning disable IDE0130
-using System.Diagnostics;
-using System.Dynamic;
-using System.Text;
 namespace FTM.FileControllers
 {
 #pragma warning restore
@@ -11,7 +8,6 @@ namespace FTM.FileControllers
     {
         public enum MoveType { File, Directory }
         public enum ExtensionMode { Append, Remove }
-
 
         internal enum PutType { Copy, Move }
 
@@ -53,34 +49,53 @@ namespace FTM.FileControllers
 
         }
 
-
         static internal bool CopyFile(string filePath, string destination, string fileExtension, ExtensionMode mode, bool replace)
         {
-            if (!File.Exists(filePath)) return false;
+            if (!File.Exists(filePath))
+                return false;
 
             FileInfo file = new(filePath);
+            string originalFileName = file.Name;
 
-            string destinationDirectory = Path.GetDirectoryName(destination)!;
-            string destinationFileName = Path.GetFileName(destination);
+            // Determine if the destination is intended to be a directory
+            bool isDestDirectory = destination.EndsWith(Path.DirectorySeparatorChar.ToString())
+                                   || destination.EndsWith(Path.AltDirectorySeparatorChar.ToString())
+                                   || Directory.Exists(destination);
 
-            string newFileName;
+            string destDir;
+            string destFile;
 
-            if (mode == ExtensionMode.Remove) {
-    
-                newFileName = destinationFileName.EndsWith(fileExtension, StringComparison.Ordinal)
-                    ? destinationFileName[..^fileExtension.Length]
-                    : destinationFileName;
+            if (isDestDirectory)
+            {
+                // Treat destination as a directory: Use original filename with extension modification
+                destDir = destination.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                destFile = ApplyExtensionMode(originalFileName, mode, fileExtension);
             }
             else
-                newFileName = destinationFileName + fileExtension;
-            
+            {
+                // Treat destination as a full file path: Modify the filename part
+                destDir = Path.GetDirectoryName(destination)!;
+                string targetFileName = Path.GetFileName(destination);
+                destFile = ApplyExtensionMode(targetFileName, mode, fileExtension);
+            }
 
-
-            string copyingTo = Path.Combine(destinationDirectory, newFileName);
-            Directory.CreateDirectory(destinationDirectory);
+            string copyingTo = Path.Combine(destDir, destFile);
+            Directory.CreateDirectory(destDir); // Ensure the target directory exists
 
             file.CopyTo(copyingTo, replace);
             return true;
+        }
+
+        private static string ApplyExtensionMode(string fileName, ExtensionMode mode, string extension)
+        {
+            return mode switch
+            {
+                ExtensionMode.Append => fileName + extension,
+                ExtensionMode.Remove => fileName.EndsWith(extension, StringComparison.Ordinal)
+                                        ? fileName[..^extension.Length]
+                                        : fileName,
+                _ => throw new ArgumentOutOfRangeException(nameof(mode))
+            };
         }
         static private void CopyDirRecursive(string directory, string destination, bool overwrite, ExtensionMode mode)
         {
@@ -106,5 +121,21 @@ namespace FTM.FileControllers
             }
         }
 
+
+        static internal bool RemoveDirectory(string dirPath)
+        {
+            DirectoryInfo dir = new(dirPath);
+            if (!dir.Exists) return false;
+            dir.Delete(true);
+            return true;
+        }
+        static internal bool RemoveFile(string filePath)
+        {
+
+            FileInfo file = new(filePath);
+            if (!file.Exists) return false;
+            file.Delete();
+            return true;
+        }
     }
 }

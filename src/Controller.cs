@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Dynamic;
 using FTM.FileControllers;
@@ -35,7 +36,7 @@ namespace FTM.Core
                 stageDir = Directory.CreateDirectory(stagePath);
                 versionsDir = Directory.CreateDirectory(versionsPath);
 
-                SETTINGS.STAGE_PATH =  stageDir.FullName ;
+                SETTINGS.STAGE_PATH = stageDir.FullName;
 
             }
         }
@@ -43,12 +44,25 @@ namespace FTM.Core
 
         public static bool Stage(string path)
         {
-            string dest = Path.Combine(SETTINGS.STAGE_PATH, path); 
-        
+            string dest = Path.Combine(SETTINGS.STAGE_PATH, path);
+
             PathType type = IdentifyType(path);
             return type == PathType.File ?
-            FileMover.CopyFile(path, SETTINGS.STAGE_PATH , SETTINGS.BACKUP_EXTENSION_MARK , FileMover.ExtensionMode.Append , true) :
-            FileMover.CopyDirectory(path,dest , true, FileMover.ExtensionMode.Append) ;   
+            FileMover.CopyFile(path, SETTINGS.STAGE_PATH, SETTINGS.BACKUP_EXTENSION_MARK, FileMover.ExtensionMode.Append, true) :
+            FileMover.CopyDirectory(path, dest, true, FileMover.ExtensionMode.Append);
+
+        }
+
+        public static bool Destage(string path)
+        {
+            
+            // File.cs  -> File.cs.bak
+
+            PathType type = IdentifyType(path);
+            return type == PathType.File ?
+            FileMover.RemoveFile(Path.Combine(SETTINGS.STAGE_PATH, path + SETTINGS.BACKUP_EXTENSION_MARK )) :
+            FileMover.RemoveDirectory(Path.Combine(SETTINGS.STAGE_PATH, path));
+
 
         }
 

@@ -9,7 +9,7 @@ namespace FTM
         public static void Main(params string[] args)
         {
            // Controller.Init(".");
-            Controller.Stage(args[0]);
+            Controller.Destage(args[0]);
          
             //    FileMover.CopyDirectory
             // (path, Path.Join("yo", path),
