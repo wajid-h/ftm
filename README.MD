@@ -1,5 +1,5 @@
 ## To Do<hr>
-    [ ] stage.
+    [x] stage.
     [ ] publish.
     [ ] versionize.
     [ ] revert.
