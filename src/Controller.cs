@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.Dynamic;
 using FTM.FileControllers;
 
 namespace FTM.Core
@@ -41,11 +43,12 @@ namespace FTM.Core
 
         public static bool Stage(string path)
         {
+            string dest = Path.Combine(SETTINGS.STAGE_PATH, path); 
         
-            //PathType type = IdentifyType(path);
-            //return type == PathType.File ?
-           // FileMover.CopyFile(path,SETTINGS.STAGE_PATH, true , SETTINGS.BACKUP_EXTENSION_MARK, FileMover.ExtensionMode.Append) :
-            return FileMover.CopyDirectory(path, SETTINGS.STAGE_PATH, true, FileMover.ExtensionMode.Append) ;   
+            PathType type = IdentifyType(path);
+            return type == PathType.File ?
+            FileMover.CopyFile(path, SETTINGS.STAGE_PATH , SETTINGS.BACKUP_EXTENSION_MARK , FileMover.ExtensionMode.Append , true) :
+            FileMover.CopyDirectory(path,dest , true, FileMover.ExtensionMode.Append) ;   
 
         }
 

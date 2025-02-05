@@ -1,0 +1,15 @@
+C:\Users\wajid\dotnet-projects\ftm\bin\Debug\net8.0\ftm.exe
+C:\Users\wajid\dotnet-projects\ftm\bin\Debug\net8.0\ftm.deps.json
+C:\Users\wajid\dotnet-projects\ftm\bin\Debug\net8.0\ftm.runtimeconfig.json
+C:\Users\wajid\dotnet-projects\ftm\bin\Debug\net8.0\ftm.dll
+C:\Users\wajid\dotnet-projects\ftm\bin\Debug\net8.0\ftm.pdb
+C:\Users\wajid\dotnet-projects\ftm\obj\Debug\net8.0\ftm.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\wajid\dotnet-projects\ftm\obj\Debug\net8.0\ftm.AssemblyInfoInputs.cache
+C:\Users\wajid\dotnet-projects\ftm\obj\Debug\net8.0\ftm.AssemblyInfo.cs
+C:\Users\wajid\dotnet-projects\ftm\obj\Debug\net8.0\ftm.csproj.CoreCompileInputs.cache
+C:\Users\wajid\dotnet-projects\ftm\obj\Debug\net8.0\ftm.sourcelink.json
+C:\Users\wajid\dotnet-projects\ftm\obj\Debug\net8.0\ftm.dll
+C:\Users\wajid\dotnet-projects\ftm\obj\Debug\net8.0\refint\ftm.dll
+C:\Users\wajid\dotnet-projects\ftm\obj\Debug\net8.0\ftm.pdb
+C:\Users\wajid\dotnet-projects\ftm\obj\Debug\net8.0\ftm.genruntimeconfig.cache
+C:\Users\wajid\dotnet-projects\ftm\obj\Debug\net8.0\ref\ftm.dll

@@ -46,32 +46,64 @@ namespace FTM.FileControllers
 
 
         static internal bool CopyDirectory(string directory, string destination, bool overwrite, ExtensionMode mode)
-        {   
+        {
 
-            CopyDirRecursive(directory, destination,  overwrite, mode);
-            return default; 
+            CopyDirRecursive(directory, destination, overwrite, mode);
+            return default;
 
         }
 
 
-        static private void CopyDirRecursive(string directory, string destination, bool overwrite, ExtensionMode mode){
+        static internal bool CopyFile(string filePath, string destination, string fileExtension, ExtensionMode mode, bool replace)
+        {
+            if (!File.Exists(filePath)) return false;
 
-            DirectoryInfo sourceDir  =  new(directory) ;
-            if(!sourceDir.Exists) 
-            throw new DirectoryNotFoundException($"Dir {directory} not found");
+            FileInfo file = new(filePath);
 
-            DirectoryInfo  dest =Directory.CreateDirectory(destination) ;
+            string destinationDirectory = Path.GetDirectoryName(destination)!;
+            string destinationFileName = Path.GetFileName(destination);
 
-            DirectoryInfo[] dirs =  sourceDir.GetDirectories();
-            
-            foreach(FileInfo file in sourceDir.GetFiles())  {
-                string targetFilePath = Path.Combine(dest.FullName, file.Name) ; 
-                file.CopyTo( targetFilePath,overwrite );
+            string newFileName;
+
+            if (mode == ExtensionMode.Remove) {
+    
+                newFileName = destinationFileName.EndsWith(fileExtension, StringComparison.Ordinal)
+                    ? destinationFileName[..^fileExtension.Length]
+                    : destinationFileName;
             }
-            foreach (DirectoryInfo subDir in dirs){
-                string newDestDir =  Path.Combine(destination ,subDir.Name );
-                CopyDirRecursive(subDir.FullName, newDestDir, overwrite,  mode);
-            }        
+            else
+                newFileName = destinationFileName + fileExtension;
+            
+
+
+            string copyingTo = Path.Combine(destinationDirectory, newFileName);
+            Directory.CreateDirectory(destinationDirectory);
+
+            file.CopyTo(copyingTo, replace);
+            return true;
+        }
+        static private void CopyDirRecursive(string directory, string destination, bool overwrite, ExtensionMode mode)
+        {
+
+            DirectoryInfo sourceDir = new(directory);
+            if (!sourceDir.Exists)
+                throw new DirectoryNotFoundException($"Dir {directory} not found");
+
+            DirectoryInfo dest = Directory.CreateDirectory(destination);
+
+            DirectoryInfo[] dirs = sourceDir.GetDirectories();
+
+            foreach (FileInfo file in sourceDir.GetFiles())
+            {
+                string targetFilePath = Path.Combine(dest.FullName, file.Name);
+
+                CopyFile(file.FullName, targetFilePath, SETTINGS.BACKUP_EXTENSION_MARK, mode, true);
+            }
+            foreach (DirectoryInfo subDir in dirs)
+            {
+                string newDestDir = Path.Combine(destination, subDir.Name);
+                CopyDirRecursive(subDir.FullName, newDestDir, overwrite, mode);
+            }
         }
 
     }
