@@ -1,4 +1,10 @@
 #pragma warning disable IDE0130
+using System.Diagnostics;
+using System.Net.Http.Headers;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
+
 namespace FTM.FileControllers
 {
 #pragma warning restore
@@ -7,7 +13,7 @@ namespace FTM.FileControllers
     public class FileMover
     {
         public enum MoveType { File, Directory }
-        public enum ExtensionMode { Append, Remove }
+        public enum ExtensionMode { Append, Remove, Perserve }
 
         internal enum PutType { Copy, Move }
 
@@ -90,10 +96,12 @@ namespace FTM.FileControllers
         {
             return mode switch
             {
+                ExtensionMode.Perserve => fileName ,
                 ExtensionMode.Append => fileName + extension,
                 ExtensionMode.Remove => fileName.EndsWith(extension, StringComparison.Ordinal)
                                         ? fileName[..^extension.Length]
                                         : fileName,
+
                 _ => throw new ArgumentOutOfRangeException(nameof(mode))
             };
         }
@@ -137,5 +145,46 @@ namespace FTM.FileControllers
             file.Delete();
             return true;
         }
+    }
+
+
+    public class FileUtils{
+
+
+
+        public static bool SHA1DIR(string dirPath, Action<string> onFinished){
+
+            DirectoryInfo dir =  new(dirPath) ;
+            Console.WriteLine("SHA-1ing dir");
+            string tempFilePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            if(!dir.Exists ) {
+                Log.Error(dir.FullName +" Does not exist.");
+                return false;
+            }
+
+            using Stream tempFileStream = File.Open(Path.Combine(tempFilePath, "hash.temp"), FileMode.CreateNew, FileAccess.ReadWrite , FileShare.ReadWrite);
+            
+            FileInfo[] files = dir.GetFiles("*", SearchOption.AllDirectories) ;
+
+
+            SHA1 hasher =  SHA1.Create();
+            foreach (FileInfo file in files){
+
+                Stream fileRead =  File.OpenRead(file.FullName) ;   
+                tempFileStream.Write(hasher.ComputeHash(fileRead));
+            }
+
+            byte[] finalHash = hasher.ComputeHash(tempFileStream) ;
+            
+            string hash = BitConverter.ToString(finalHash).ToLower().Replace("-", "");
+            
+            FileInfo tempFile = new(Path.Combine(tempFilePath, "hash.temp"));
+            tempFile.Delete();            
+            onFinished.Invoke(hash) ;
+            return true ;
+
+            
+        }
+
     }
 }
