@@ -6,7 +6,7 @@ string callName_, string help_
 
  
 public readonly string Command 
-{get=> callName_; private set{};
+{get=> callName_; private set{}};
 
 public readonly string Help
 {get=> help_; private set{};}
