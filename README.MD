@@ -1,6 +1,6 @@
 ## To Do<hr>
     [x] stage.
-    [ ] publish.
+    [x] publish.
     [ ] versionize.
     [ ] revert.
     [ ] remote uploads  and downloads.
