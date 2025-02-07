@@ -162,7 +162,10 @@ namespace FTM.FileControllers
                 return false;
             }
 
-            using Stream tempFileStream = File.Open(Path.Combine(tempFilePath, "hash.temp"), FileMode.CreateNew, FileAccess.ReadWrite , FileShare.ReadWrite);
+            string tempFileName = Utils.GetRandomString(10);
+            Log.WriteLine(tempFileName);
+
+            using Stream tempFileStream = File.Open(Path.Combine(tempFilePath, tempFileName), FileMode.CreateNew, FileAccess.ReadWrite , FileShare.ReadWrite);
             
             FileInfo[] files = dir.GetFiles("*", SearchOption.AllDirectories) ;
 
@@ -178,12 +181,19 @@ namespace FTM.FileControllers
             
             string hash = BitConverter.ToString(finalHash).ToLower().Replace("-", "");
             
+
+            // release dat file first
+            tempFileStream.Flush();
+            tempFileStream.Dispose();
+            tempFileStream.Close();
+
+
             FileInfo tempFile = new(Path.Combine(tempFilePath, "hash.temp"));
+            
             tempFile.Delete();            
             onFinished.Invoke(hash) ;
             return true ;
 
-            
         }
 
     }
