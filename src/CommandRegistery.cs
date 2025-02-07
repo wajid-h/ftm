@@ -7,8 +7,7 @@ namespace FTM
         private  Dictionary<string, MethodInfo> commands =  [];
         public  Dictionary<string, MethodInfo>  Commands {get =>  commands ??=LoadRegistery();  }
 
-        
-
+        // new file
         private Dictionary<string, MethodInfo> LoadRegistery(){
 
             Dictionary<string, MethodInfo> commands_register=  [] ; 

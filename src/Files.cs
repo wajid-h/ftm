@@ -174,12 +174,12 @@ namespace FTM.FileControllers
         /// <returns>true on success</returns>
         static internal bool RemovePath(string path)
         {
-
             PathType type = FileUtils.IdentifyPathType(path);
 
             if (type == PathType.File) return RemoveFile(path);
             return RemoveDirectory(path);
         }
+
 
 
         /// <summary>
@@ -243,16 +243,17 @@ namespace FTM.FileControllers
 
         /// <summary>
         /// Computes a SHA-1 hash of a directory and performs an optionally given action on completion.
+        /// do not use it as in actual security context, purpose here is to just make sure we always have unique versions.
         /// </summary>
         /// <param name="dirPath">the target directory</param>
         /// <param name="onFinished">the action on completion</param>
         /// <returns>true if hashing process was completed.</returns>
-        public static bool SHA1DIR(string dirPath, Action<string>? onFinished = null)
+        public static bool DirSecureHash(string dirPath, Action<string>? onFinished = null)
         {
 
             DirectoryInfo dir = new(dirPath);
-            Console.WriteLine("SHA-1ing dir");
-            string tempFilePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            string tempFilePath = Path.GetTempPath();
+
             if (!dir.Exists)
             {
                 Log.Error(dir.FullName + " Does not exist.");
@@ -275,6 +276,9 @@ namespace FTM.FileControllers
                 tempFileStream.Write(hasher.ComputeHash(fileRead));
             }
 
+            // reset the damm streaam back to zero to calculate the hash from beggining otherwise ts reads an empty buffer for hasing
+            tempFileStream.Seek(0, SeekOrigin.Begin) ;
+            
             byte[] finalHash = hasher.ComputeHash(tempFileStream);
 
             string hash = BitConverter.ToString(finalHash).ToLower().Replace("-", "");

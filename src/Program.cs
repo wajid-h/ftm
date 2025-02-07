@@ -7,7 +7,7 @@ namespace FTM
         public static void Main(params string[] args)
         {
             Controller.Init(".");
-            Controller.Stage(args[0]);
+          //  Controller.Stage(args[0]);
             
             Log.AskFor("Continue?", () => {} , () =>{});
             Controller.Versionize();         

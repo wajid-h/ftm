@@ -72,11 +72,11 @@ namespace FTM.Core
 
         public static bool Versionize(){
 
-            bool done = FileUtils.SHA1DIR(SETTINGS.STAGE_PATH, make_version);
+            bool done = FileUtils.DirSecureHash(SETTINGS.STAGE_PATH, make_version);
             
             static void make_version(string versionName) {
               Console.WriteLine(versionName);
-              FileMover.CopyDirRecursive(SETTINGS.STAGE_PATH,Path.Combine(SETTINGS.VERSIONS_ROOT, versionName ), true , ExtensionMode.Perserve );
+              FileMover.CopyDirRecursive(SETTINGS.STAGE_PATH,Path.Combine(SETTINGS.VERSIONS_ROOT, versionName  ), true , ExtensionMode.Perserve );
             }
             return done;
         }
