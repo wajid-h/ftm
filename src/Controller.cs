@@ -8,7 +8,7 @@ namespace FTM.Core
 {
     public class Controller
     {
-        internal enum PathType { File, Directory }
+        
 
         static DirectoryInfo? baseDir;
         static DirectoryInfo? stageDir;
@@ -52,10 +52,10 @@ namespace FTM.Core
         {
             string dest = Path.Combine(SETTINGS.STAGE_PATH, path);
 
-            PathType type = IdentifyType(path);
+            PathType type = FileUtils.IdentifyPathType(path);
             return type == PathType.File ?
-            FileMover.CopyFile(path, SETTINGS.STAGE_PATH, SETTINGS.BACKUP_EXTENSION_MARK, FileMover.ExtensionMode.Append, true) :
-            FileMover.CopyDirectory(path, dest, true, FileMover.ExtensionMode.Append);
+            FileMover.CopyFile(path, SETTINGS.STAGE_PATH, SETTINGS.BACKUP_EXTENSION_MARK, ExtensionMode.Append, true) :
+            FileMover.CopyDirRecursive(path, dest, true, ExtensionMode.Append);
 
         }
 
@@ -63,7 +63,7 @@ namespace FTM.Core
         {
 
             // File.cs  -> File.cs.bak
-            PathType type = IdentifyType(path);
+            PathType type = FileUtils.IdentifyPathType(path);
             return type == PathType.File ?
             FileMover.RemoveFile(Path.Combine(SETTINGS.STAGE_PATH, path + SETTINGS.BACKUP_EXTENSION_MARK )) :
             FileMover.RemoveDirectory(Path.Combine(SETTINGS.STAGE_PATH, path));
@@ -76,21 +76,9 @@ namespace FTM.Core
             
             static void make_version(string versionName) {
               Console.WriteLine(versionName);
-              FileMover.CopyDirectory(SETTINGS.STAGE_PATH,Path.Combine(SETTINGS.VERSIONS_ROOT, versionName ), true , FileMover.ExtensionMode.Perserve );
+              FileMover.CopyDirRecursive(SETTINGS.STAGE_PATH,Path.Combine(SETTINGS.VERSIONS_ROOT, versionName ), true , ExtensionMode.Perserve );
             }
             return done;
-        }
-        private static PathType IdentifyType(string path, PathType priority = PathType.File)
-        {
-
-            bool isFile = File.Exists(path);
-            bool isDir = Directory.Exists(path);
-
-            if (isDir && isFile)
-                return priority;
-
-            return isDir ? PathType.Directory : PathType.File;
-
         }
 
         internal static bool HasMissingDirs(params string[] dirs)
