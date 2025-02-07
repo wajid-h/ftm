@@ -43,7 +43,7 @@ namespace VCS.Core
             SETTINGS.STAGE_PATH = stagePath;
         }
 
-        [Command("stage", "tf you need help for on ts dawg")]
+     
         public static bool Stage(string[] paths)
         {
             if (paths.Length is 0) return false;
@@ -61,8 +61,7 @@ namespace VCS.Core
                         
             return true;
         }
-        [Command("unstage", "nah i think this is also self explainatory")]
-
+  
         public static bool Destage(params string[] paths)
         {
             if (paths.Length is 0) return false;
@@ -78,7 +77,7 @@ namespace VCS.Core
             }
             return true;
         }
-        [Command("commit", "fr fr")]
+
         public static bool Versionize()
         {
 
