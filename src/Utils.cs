@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace FTM
+namespace VCS
 {
     public class Utils
     {

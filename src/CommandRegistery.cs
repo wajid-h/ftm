@@ -1,14 +1,14 @@
 using System.Reflection;
-namespace FTM 
+namespace VCS 
 {
 
     public class CommandRegistery{
 
-        private  Dictionary<string, MethodInfo> commands =  [];
-        public  Dictionary<string, MethodInfo>  Commands {get =>  commands ??=LoadRegistery();  }
+        private  Dictionary<string, MethodInfo>? commands ;
+        public  Dictionary<string, MethodInfo>  Commands {get =>  commands ??= LoadRegistery();  }
 
         // new file
-        private Dictionary<string, MethodInfo> LoadRegistery(){
+        private static Dictionary<string, MethodInfo> LoadRegistery(){
 
             Dictionary<string, MethodInfo> commands_register=  [] ; 
 
@@ -23,12 +23,12 @@ namespace FTM
                     BindingFlags.Public |
                     BindingFlags.NonPublic |
                     BindingFlags.Static 
-                ).Where(query =>  query.GetCustomAttribute(typeof(CommandAtrribute)) is not null ); 
+                ).Where(query =>  query.GetCustomAttribute(typeof(CommandAttribute)) is not null ); 
 
                 foreach (MethodInfo method  in methdos) {
                     
                     #pragma warning disable  CS8600
-                    CommandAtrribute atrributeInstance = method.GetCustomAttribute(typeof(CommandAtrribute)) as CommandAtrribute; 
+                    CommandAttribute atrributeInstance = method.GetCustomAttribute(typeof(CommandAttribute)) as CommandAttribute; 
                     #pragma warning disable 
                     commands_register.Add(atrributeInstance.Command , method);
                 }

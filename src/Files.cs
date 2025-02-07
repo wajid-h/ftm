@@ -1,7 +1,7 @@
 #pragma warning disable IDE0130
 using System.Security.Cryptography;
 
-namespace FTM.FileControllers
+namespace VCS.FileControllers
 {
 #pragma warning restore
 
@@ -277,8 +277,8 @@ namespace FTM.FileControllers
             }
 
             // reset the damm streaam back to zero to calculate the hash from beggining otherwise ts reads an empty buffer for hasing
-            tempFileStream.Seek(0, SeekOrigin.Begin) ;
-            
+            tempFileStream.Seek(0, SeekOrigin.Begin);
+
             byte[] finalHash = hasher.ComputeHash(tempFileStream);
 
             string hash = BitConverter.ToString(finalHash).ToLower().Replace("-", "");
@@ -296,6 +296,19 @@ namespace FTM.FileControllers
             onFinished?.Invoke(hash);
             return true;
 
+        }
+
+        internal static bool HasMissingDirs(params string[] dirs)
+        {
+            bool missing_dirs = false;
+
+            foreach (string dir in dirs)
+            {
+                missing_dirs = Directory.Exists(dir) is false;
+                if (missing_dirs)
+                    break;
+            }
+            return missing_dirs;
         }
 
     }

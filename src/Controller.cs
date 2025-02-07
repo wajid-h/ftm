@@ -1,14 +1,10 @@
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Dynamic;
-using System.Net.Http.Headers;
-using FTM.FileControllers;
+using VCS.FileControllers;
 
-namespace FTM.Core
+namespace VCS.Core
 {
     public class Controller
     {
-        
+
 
         static DirectoryInfo? baseDir;
         static DirectoryInfo? stageDir;
@@ -42,41 +38,56 @@ namespace FTM.Core
 
             }
 
-            SETTINGS.ROOT =  initialPath ; 
-            SETTINGS.VERSIONS_ROOT =  versionsPath ; 
-            SETTINGS.STAGE_PATH =  stagePath;
+            SETTINGS.ROOT = initialPath;
+            SETTINGS.VERSIONS_ROOT = versionsPath;
+            SETTINGS.STAGE_PATH = stagePath;
         }
 
-
-        public static bool Stage(string path)
+        [Command("stage", "tf you need help for on ts dawg")]
+        public static bool Stage(string[] paths)
         {
-            string dest = Path.Combine(SETTINGS.STAGE_PATH, path);
+            if (paths.Length is 0) return false;
 
-            PathType type = FileUtils.IdentifyPathType(path);
-            return type == PathType.File ?
-            FileMover.CopyFile(path, SETTINGS.STAGE_PATH, SETTINGS.BACKUP_EXTENSION_MARK, ExtensionMode.Append, true) :
-            FileMover.CopyDirRecursive(path, dest, true, ExtensionMode.Append);
+            foreach (string path in paths)
+            {
+                string dest = Path.Combine(SETTINGS.STAGE_PATH, path);
 
+                PathType type = FileUtils.IdentifyPathType(path);
+                return type == PathType.File ?
+                FileMover.CopyFile(path, SETTINGS.STAGE_PATH, SETTINGS.BACKUP_EXTENSION_MARK, ExtensionMode.Append, true) :
+                FileMover.CopyDirRecursive(path, dest, true, ExtensionMode.Append);
+
+            }
+                        
+            return true;
         }
+        [Command("unstage", "nah i think this is also self explainatory")]
 
-        public static bool Destage(string path)
+        public static bool Destage(params string[] paths)
         {
+            if (paths.Length is 0) return false;
 
-            // File.cs  -> File.cs.bak
-            PathType type = FileUtils.IdentifyPathType(path);
-            return type == PathType.File ?
-            FileMover.RemoveFile(Path.Combine(SETTINGS.STAGE_PATH, path + SETTINGS.BACKUP_EXTENSION_MARK )) :
-            FileMover.RemoveDirectory(Path.Combine(SETTINGS.STAGE_PATH, path));
+            foreach (string path in paths)
+            {
 
+                // File.cs  -> File.cs.bak
+                PathType type = FileUtils.IdentifyPathType(path);
+                return type == PathType.File ?
+                FileMover.RemoveFile(Path.Combine(SETTINGS.STAGE_PATH, path + SETTINGS.BACKUP_EXTENSION_MARK)) :
+                FileMover.RemoveDirectory(Path.Combine(SETTINGS.STAGE_PATH, path));
+            }
+            return true;
         }
-
-        public static bool Versionize(){
+        [Command("commit", "fr fr")]
+        public static bool Versionize()
+        {
 
             bool done = FileUtils.DirSecureHash(SETTINGS.STAGE_PATH, make_version);
-            
-            static void make_version(string versionName) {
-              Console.WriteLine(versionName);
-              FileMover.CopyDirRecursive(SETTINGS.STAGE_PATH,Path.Combine(SETTINGS.VERSIONS_ROOT, versionName  ), true , ExtensionMode.Perserve );
+
+            static void make_version(string versionName)
+            {
+                Console.WriteLine(versionName);
+                FileMover.CopyDirRecursive(SETTINGS.STAGE_PATH, Path.Combine(SETTINGS.VERSIONS_ROOT, versionName), true, ExtensionMode.Perserve);
             }
             return done;
         }
