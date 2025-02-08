@@ -9,7 +9,10 @@ namespace VCS.Core
         static DirectoryInfo? baseDir;
         static DirectoryInfo? stageDir;
         static DirectoryInfo? versionsDir;
-
+        /// <summary>
+        /// Initializes a repo at given path, creates folder structure if not available already
+        /// </summary>
+        /// <param name="directory">the target directory to init in</param>
         public static void Init(string directory)
         {
             if (!Directory.Exists(directory))
@@ -43,7 +46,11 @@ namespace VCS.Core
             SETTINGS.STAGE_PATH = stagePath;
         }
 
-     
+        /// <summary>
+        /// puts a copy of files in paths into stage 
+        /// </summary>
+        /// <param name="paths">files to stage</param>
+        /// <returns>true if success</returns>
         public static bool Stage(string[] paths)
         {
             if (paths.Length is 0) return false;
@@ -61,7 +68,12 @@ namespace VCS.Core
                         
             return true;
         }
-  
+    
+    /// <summary>
+    /// removes files from stage
+    /// </summary>
+    /// <param name="paths"></param>
+    /// <returns>true if successfully removes all file</returns>
         public static bool Destage(params string[] paths)
         {
             if (paths.Length is 0) return false;
@@ -77,7 +89,10 @@ namespace VCS.Core
             }
             return true;
         }
-
+        /// <summary>
+        /// Computes a SHA-1 of current stage, copy the content of stage over to a new version 
+        /// </summary>
+        /// <returns>true on success</returns>
         public static bool Versionize()
         {
 
@@ -91,6 +106,11 @@ namespace VCS.Core
             return done;
         }
 
+        /// <summary>
+        /// walks through a list of paths and checks if all of them are present
+        /// </summary>
+        /// <param name="dirs">the dirs to walk throughh</param>
+        /// <returns>true if one or more directories are missing from 'dirs'</returns>
         internal static bool HasMissingDirs(params string[] dirs)
         {
             bool missing_dirs = false;

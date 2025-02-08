@@ -1,7 +1,13 @@
 public class Log
 {
     public class TUIAffirmCancelRequest
-    {
+    {   
+        /// <summary>
+        /// Creates a simple TUI yes/no prompt, performs action respective of user response.
+        /// </summary>
+        /// <param name="message">the prompt</param>
+        /// <param name="onYes">action on affirm</param>
+        /// <param name="onNo">action on negative</param>
         public TUIAffirmCancelRequest(string message, Action onYes, Action onNo)
         {
 
@@ -23,6 +29,7 @@ public class Log
 
 
     }
+
 
 
     public class LogSettings(LoggingLevel level_)
@@ -93,6 +100,12 @@ public class Log
     {
         return new(message, onYes, onNo);
     }
+
+    /// <summary>
+    /// Writes a log to console, with type of log and timestamp
+    /// </summary>
+    /// <param name="logLevel">log type</param>
+    /// <param name="message">message</param>
     private static void WriteLog(LoggingLevel logLevel, string message)
     {
 
