@@ -1,7 +1,7 @@
 public class Log
 {
     public class TUIAffirmCancelRequest
-    {   
+    {
         /// <summary>
         /// Creates a simple TUI yes/no prompt, performs action respective of user response.
         /// </summary>
@@ -11,20 +11,21 @@ public class Log
         public TUIAffirmCancelRequest(string message, Action onYes, Action onNo)
         {
 
-            Log.Write(message + " (Y/N)");
+            Write(message + " (Y/N)");
             string? readValue = Console.ReadLine();
+
             if (string.IsNullOrEmpty(readValue) || readValue.Equals("n", StringComparison.OrdinalIgnoreCase)){
                 onNo.Invoke();
                 return;
-            }
-            else if (readValue.Equals("y", StringComparison.OrdinalIgnoreCase)){
+            } 
+            if (readValue.Equals("y", StringComparison.OrdinalIgnoreCase)){
                 onYes.Invoke();
                 return;
             }
-            else{
-                onNo.Invoke();
-                return;
-            }
+
+            onNo.Invoke();
+            return;
+
         }
 
 
@@ -110,9 +111,9 @@ public class Log
     {
 
         if (Settings == null)
-        {   
+        {
             Settings = new(LoggingLevel.Debug);
-            
+
         }
 
 
