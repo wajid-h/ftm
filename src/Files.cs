@@ -35,6 +35,7 @@ namespace VCS.FileControllers
         /// <returns></returns>
         static internal bool Put(string target, string destination, PathType type, ExtensionMode mode, bool overwrite = false, PutType put = PutType.Move)
         {
+
             try
             {
                 bool isDirectory = type == PathType.Directory;
@@ -161,8 +162,17 @@ namespace VCS.FileControllers
                 }
                 return true;
             }
-            catch (AccessViolationException) { return false; throw; }
-            catch (UnauthorizedAccessException) { return false; throw; }
+            catch (AccessViolationException)
+            {
+                Log.WriteLine($"Access voilation while trying to copy {directory}");
+                return false;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                Log.WriteLine($"You do not have correct permissions to copy {directory}");
+                return false;
+
+            }
 
         }
 
@@ -196,8 +206,16 @@ namespace VCS.FileControllers
                 dir.Delete(true);
                 return true;
             }
-            catch (DirectoryNotFoundException) { return default; }
-            catch (Exception) { return default; }
+            catch (DirectoryNotFoundException)
+            {
+                Console.WriteLine($"Directory {dirPath} cannot be located.");
+                return default;
+            }
+            catch (Exception)
+            {
+                Console.WriteLine($"Unknown error during deletion of {dirPath}");
+                return default;
+            }
         }
         /// <summary>
         /// Removes file and reports the action's success, prefer RemovePath over this.
@@ -213,8 +231,17 @@ namespace VCS.FileControllers
                 file.Delete();
                 return true;
             }
-            catch (FileNotFoundException) { return false; }
-            catch (Exception) { return false; }
+            catch (FileNotFoundException)
+            {
+                Console.WriteLine($"File '{filePath}' cannot be located.");
+                return false;
+            }
+            catch (Exception)
+            {
+                Console.WriteLine($"Error removing '{filePath}'.");
+
+                return false;
+            }
         }
     }
 
