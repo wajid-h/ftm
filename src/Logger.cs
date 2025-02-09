@@ -8,6 +8,7 @@ public class Log
         /// <param name="message">the prompt</param>
         /// <param name="onYes">action on affirm</param>
         /// <param name="onNo">action on negative</param>
+        /// 
         public TUIAffirmCancelRequest(string message, Action onYes, Action onNo)
         {
 
@@ -25,10 +26,7 @@ public class Log
 
             onNo.Invoke();
             return;
-
         }
-
-
     }
 
 
