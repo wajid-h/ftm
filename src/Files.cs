@@ -116,15 +116,16 @@ namespace VCS.FileControllers
         {
             return mode switch
             {
-                ExtensionMode.Perserve => fileName,
-                ExtensionMode.Append => fileName + extension,
-                ExtensionMode.Remove => fileName.EndsWith(extension, StringComparison.Ordinal)
+                ExtensionMode.Perserve  => fileName,
+                ExtensionMode.Append    => fileName + extension,
+                ExtensionMode.Remove    => fileName.EndsWith(extension, StringComparison.Ordinal)
                                         ? fileName[..^extension.Length]
                                         : fileName,
 
                 _ => throw new ArgumentOutOfRangeException(nameof(mode))
             };
         }
+
 
         /// <summary>
         /// recurvisly copies directory from top to bottom, over to destination.
@@ -149,6 +150,7 @@ namespace VCS.FileControllers
 
                 DirectoryInfo[] dirs = sourceDir.GetDirectories();
 
+              
                 foreach (FileInfo file in sourceDir.GetFiles())
                 {
                     string targetFilePath = Path.Combine(dest.FullName, file.Name);
