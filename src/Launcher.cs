@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Security.Cryptography;
+using VCS.Core;
 
 namespace VCS
 {
@@ -11,14 +12,18 @@ namespace VCS
         public static void Main(params string[] args){
 
 
-            commands =  new CommandLoader().LoadCommands();
+            // commands =  new CommandLoader().LoadCommands();
             
-            foreach(var command in commands){
-                Log.WriteLine(command.ToString());
-            }
+            // foreach(var command in commands){
+            //     Log.WriteLine(command.ToString());
+            // }
             
             //Execute(args); 
 
+
+            Controller.Init(".");
+            Controller.Stage(args);
+            Controller.Versionize();
         }
 
         public static bool Execute(string[] args){  

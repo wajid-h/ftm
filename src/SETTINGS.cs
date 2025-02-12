@@ -8,4 +8,6 @@ public static class SETTINGS{
     public static  string STAGE_PATH =  Path.Combine(ROOT, ".stage");
     public static readonly string BACKUP_EXTENSION_MARK = ".bak"; 
 
+
+    public static readonly string VERSION_HISTORY_FILENAME = ".vinfo";
 }

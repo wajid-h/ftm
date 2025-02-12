@@ -1,3 +1,7 @@
+using System.Dynamic;
+using System.Linq.Expressions;
+using System.Text;
+using System.Threading.Tasks;
 using VCS.FileControllers;
 
 namespace VCS.Core
@@ -29,6 +33,7 @@ namespace VCS.Core
             if (!HasMissingDirs(initialPath, stagePath, versionsPath))
             {
                 Log.WriteLine($"Using existing vcs instance at {initialPath}");
+
             }
             else
             {
@@ -36,7 +41,6 @@ namespace VCS.Core
                 baseDir = Directory.CreateDirectory(initialPath);
                 stageDir = Directory.CreateDirectory(stagePath);
                 versionsDir = Directory.CreateDirectory(versionsPath);
-
                 SETTINGS.STAGE_PATH = stageDir.FullName;
 
             }
@@ -44,6 +48,10 @@ namespace VCS.Core
             SETTINGS.ROOT = initialPath;
             SETTINGS.VERSIONS_ROOT = versionsPath;
             SETTINGS.STAGE_PATH = stagePath;
+
+            string versionHistory = Path.Combine(SETTINGS.ROOT, SETTINGS.VERSION_HISTORY_FILENAME);
+            if (!File.Exists(versionHistory))
+                File.Create(versionHistory);
         }
 
         /// <summary>
@@ -65,15 +73,15 @@ namespace VCS.Core
                 FileMover.CopyDirRecursive(path, dest, true, ExtensionMode.Append);
 
             }
-                        
+
             return true;
         }
-    
-    /// <summary>
-    /// removes files from stage
-    /// </summary>
-    /// <param name="paths"></param>
-    /// <returns>true if successfully removes all file</returns>
+
+        /// <summary>
+        /// removes files from stage
+        /// </summary>
+        /// <param name="paths"></param>
+        /// <returns>true if successfully removes all file</returns>
         public static bool Destage(params string[] paths)
         {
             if (paths.Length is 0) return false;
@@ -102,9 +110,42 @@ namespace VCS.Core
             {
                 Console.WriteLine(versionName);
                 FileMover.CopyDirRecursive(SETTINGS.STAGE_PATH, Path.Combine(SETTINGS.VERSIONS_ROOT, versionName), true, ExtensionMode.Perserve);
+
+                write_changes(versionName) ;
             }
-            return done;
+
+            static void write_changes(string fileHash)
+            {
+
+                string infoPath = Path.Combine(SETTINGS.ROOT, SETTINGS.VERSION_HISTORY_FILENAME);
+
+                StringBuilder newEntry = new();
+
+                byte[] lastLineBuffer = [];
+
+                // changed line, hash should be diffferent...
+
+                int lastVersion ;
+                // read the last version
+                List<string> lines =[.. File.ReadLines(infoPath)] ;
+                if(lines.Count == 0 ) 
+                {
+                    lastVersion =  0 ;
+                }
+                else{
+                bool parsedLastVersion = int.TryParse(lines.Last().Replace(" ", "").Split("-")[0], out  lastVersion);
+                }
+                
+                newEntry.Append($"{lastVersion + 1 }-{DateTime.Now}-{fileHash}");
+                
+                using StreamWriter writer = File.AppendText(infoPath);
+                writer.WriteLine(newEntry.ToString());
+            }
+            return done ;
+
         }
+
+
 
         /// <summary>
         /// walks through a list of paths and checks if all of them are present

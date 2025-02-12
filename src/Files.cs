@@ -126,7 +126,6 @@ namespace VCS.FileControllers
             };
         }
 
-
         /// <summary>
         /// recurvisly copies directory from top to bottom, over to destination.
         /// </summary>
